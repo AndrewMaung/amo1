@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>AMO</title>
+  </head>
+  <body>
+    <div class="row">
+      <div class="col-1/2">
+        <button><a href="/" id="home">Home</a></button>
+      </div>
+      <div class="col-1/2">
+        <button><a href="/user" id="usr">User</a></button>
+      </div>
+    </div>
+    <div id="root"></div>
+  </body>
+  <script>
+    var root = document.getElementById("root");
+    var usr = document.getElementById("usr");
+    var rootContent = `
+    <h1>Hi There !</h1>
+   `;
+    root.innerHTML = rootContent;
+    usr.addEventListener("click", async (e) => {
+      e.preventDefault();
+      root.innerHTML = "";
+      await fetch("/user")
+        .then((res) => res.json())
+        .then((data) => (root.innerHTML = data.data));
+    });
+  </script>
+</html>
