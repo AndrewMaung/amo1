@@ -69,5 +69,59 @@ bookRouter.post("/", async (req, res) => {
     }
 });
 
+//PUT
+
+bookRouter.put("/q", async(req, res) => {
+    try{
+        //getting info of existing data
+        const bookInfo = await fs.readFile(
+            path.join(cwd, "model/book.json"),
+            "utf-8"
+        );
+        
+        //extracting info from incoming http request
+        const info = JSON.parse(bookInfo);
+        const reqId = req.query.id;
+        const reqTitle = req.body.title;
+        const reqAuthor = req.body.author;
+        const reqGenre = req.body.genre;
+        const reqYear = req.body.year;
+        const reqObj = info.find((i) => i.id === reqId);
+        
+        //checking if each data have values
+        const title = reqTitle === undefined ? reqObj.title : reqTitle;
+        const author = reqAuthor === undefined ? reqOnj.author : reqAuthor;
+        const genre = reqGenre === undefined ? reqObj.genre : reqGenre;
+        const year = reqYear === undefined ? reqObj.year : reqYear;
+        
+        //creating new Object with new data from user
+        const newObj = {
+            id: reqObj.id, 
+            title : title,
+            author : author,
+            genre : genre,
+            year : year
+        };
+
+        //create final object by replacing the new object
+        const finalObj = info.map((item) => {
+            if (item.id === reqId) {
+                return newObj;
+            }
+            return item;
+        });
+        setTimeout(async ()=> {
+            await fs.writeFile(
+                path.join(cwd, "model/book.json"),
+                JSON.stringify(finalObj, null, 2)
+            );
+        },1000)
+        res.json({ message : "Success, Your changes were made! "})
+    } catch (error) {
+        console.log(error);
+        res.status(500).end("Something went wrong");
+    }
+})
+
 
 export { bookRouter };

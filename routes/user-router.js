@@ -21,9 +21,11 @@ userRouter.get("/", (_req, res) => {
   }
 });
 
-userRouter.get("/q", (req, res) => {
+userRouter.get("/q", async (req, res) => {
   try {
-    const id = parseInt(req.query.id);
+    const userInfo = await fs.readFile(path.join(cwd, "model/user.json"), "utf-8");
+    const users = JSON.parse(userInfo)
+    const id = req.query.id;
     const user = users.find((i) => i.id === id);
     const response = {
       name: user.name,
@@ -64,5 +66,72 @@ userRouter.post("/", async (req, res) => {
     res.status(500).end("Something went wrong");
   }
 });
+
+//PUT
+userRouter.put("/q", async (req, res) => {
+  try {
+    const userInfo = await fs.readFile(
+      path.join(cwd, "model/user.json"),
+      "utf-8"
+    );
+    const info = JSON.parse(userInfo);
+    const reqId = req.query.id;
+    const reqName = req.body.name;
+    const reqUsername = req.body.username;
+    const reqEmail = req.body.email;
+    const reqObj = info.find((i) => i.id === reqId);
+    const name = reqName === undefined ? reqObj.name : reqName;
+    const email = reqEmail === undefined ? reqObj.email : reqEmail;
+    const username = reqUsername === undefined ? reqObj.username : reqUsername;
+    const newObj = {
+      id: reqObj.id,
+      name: name,
+      username: username,
+      email: email,
+    };
+    const finalObj = info.map((item) => {
+      if (item.id === reqId) {
+        return newObj;
+      }
+      return item;
+    });
+    setTimeout(async () => {
+      await fs.writeFile(
+        path.join(cwd, "model/user.json"),
+        JSON.stringify(finalObj, null, 2)
+      );
+    }, 1000);
+    res.json({ message: "Success!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).end("Something went wrong");
+  }
+});
+
+//DELETE
+userRouter.delete("/q", async (req, res) =>{
+  try {
+    const userInfo = await fs.readFile(
+      path.join(cwd, "model/user.json"),
+      "utf-8"
+    );
+
+    const info = JSON.parse(userInfo);
+    const reqId = req.query.id;
+
+    const finalObj = info.filter((item) => item.id !== reqId);
+
+    await fs.writeFile(
+      path.join(cwd, "model/user.json"),
+      JSON.stringify(finalObj, null, 2)
+    );
+
+    res.json({ message : "Success! User Have Been Deleted!"});
+  } catch (error) {
+    console.log(error);
+    res.status(500).end("Something went wrong");
+  }
+});
+
 
 export { userRouter };
