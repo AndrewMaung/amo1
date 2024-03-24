@@ -1,15 +1,12 @@
 import express from "express";
 import fs from "fs/promises";
 import path from "path";
+
 const cwd = process.cwd();
-
-// set user router
 const userRouter = express.Router();
-// GET
-// user request is http://localhost:port/user
-userRouter.get("/", (_req, res) => {
-  // try/cash for error handling
 
+// GET
+userRouter.get("/", (req, res) => {
   try {
     const response =
       "<h1>Welcome from AMO Muskudo service  <p>&#128512;<p></h1>";
@@ -31,6 +28,7 @@ userRouter.get("/q", async (req, res) => {
       name: user.name,
       username: user.username,
       email: user.email,
+      password: user.password
     };
     res.json({ success: true, data: response });
   } catch (error) {
@@ -50,11 +48,13 @@ userRouter.post("/", async (req, res) => {
     const name = req.body.name;
     const username = req.body.username;
     const email = req.body.email;
+    const password = req.body.password;
     const userPost = {
       id: Date.now().toString(32),
       name: name,
       username: username,
       email: email,
+      password: password
     };
     const obj = JSON.stringify([...info, userPost], null, 2);
     setTimeout(async () => {
@@ -66,6 +66,8 @@ userRouter.post("/", async (req, res) => {
     res.status(500).end("Something went wrong");
   }
 });
+
+
 
 //PUT
 userRouter.put("/q", async (req, res) => {
@@ -79,15 +81,18 @@ userRouter.put("/q", async (req, res) => {
     const reqName = req.body.name;
     const reqUsername = req.body.username;
     const reqEmail = req.body.email;
+    const reqPassword = req.body.password;
     const reqObj = info.find((i) => i.id === reqId);
     const name = reqName === undefined ? reqObj.name : reqName;
     const email = reqEmail === undefined ? reqObj.email : reqEmail;
     const username = reqUsername === undefined ? reqObj.username : reqUsername;
+    const password = reqPassword === undefined ? reqObj.password : reqPassword;
     const newObj = {
       id: reqObj.id,
       name: name,
       username: username,
       email: email,
+      password: password
     };
     const finalObj = info.map((item) => {
       if (item.id === reqId) {

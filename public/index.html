@@ -18,27 +18,25 @@
     <div id="root"></div>
 
     <!-- Login Form -->
-    <center> <h1> Login Form </h1> </center>   
-    <form>  
-        <div class="container">   
-            <label>Username : </label>   
-            <input type="text" placeholder="Enter Username" name="username" required>  
-            <label>Password : </label>   
-            <input type="password" placeholder="Enter Password" name="password" required>  
-            <button type="submit">Login</button>   
-            <input type="checkbox" checked="checked"> Remember me   
-            <button type="button" class="cancelbtn"> Cancel</button>   
-            Forgot <a href="#"> password? </a>   
-        </div>   
-    </form>     
+    <center><h1>Login Form</h1></center>
+    <form id="loginForm" action="/login" method="POST"> 
+      <div class="container">
+        <label>Username:</label>
+        <input type="text" placeholder="Enter Username" name="username" required>
+        <label>Password:</label>
+        <input type="password" placeholder="Enter Password" name="password" required>
+        <button type="submit">Login</button>
+        <input type="checkbox" checked="checked"> Remember me
+        <button type="button" class="cancelbtn">Cancel</button>
+        Forgot <a href="#">password?</a>
+      </div>
+    </form>
 
   </body>
   <script>
     var root = document.getElementById("root");
     var usr = document.getElementById("usr");
-    var rootContent = `
-    <h1>Hi There !</h1>
-   `;
+    var rootContent = `<h1>Hi There !</h1>`;
     root.innerHTML = rootContent;
     usr.addEventListener("click", async (e) => {
       e.preventDefault();

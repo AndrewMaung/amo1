@@ -1,9 +1,9 @@
 import express from "express";
 import path from "node:path";
+import fs from "fs/promises";
 import { fileURLToPath } from "url";
 import { userRouter } from "./routes/user-router.js";
 import { bookRouter } from "./routes/book-router.js";
-
 
 const app = express();
 const port = 5678;
@@ -38,6 +38,36 @@ app.use((req, res, next) => {
   }
 
   next();
+});
+
+const userFilePath = path.join(__dirname, "model", "user.json");
+
+app.post("/login", async (req, res) => {
+  try {
+    const username = req.body.username;
+    const password = req.body.password;
+
+   
+    const userData = await fs.readFile(userFilePath, "utf-8");
+    const users = JSON.parse(userData);
+
+    const user = users.find((user) => user.username === username);
+
+    if (!user) {
+      res.status(401).json({ message: "Invalid username or password" });
+      return;
+    }
+
+    if (user.password !== password) {
+      res.status(401).json({ message: "Invalid username or password" });
+      return;
+    }
+   
+    res.redirect("/success_login.html");
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 // user router middleware
